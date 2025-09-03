@@ -10,23 +10,32 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ActivityService {
-    private  final ActivityRepository activityRepository;
+
+    private final ActivityRepository activityRepository;
+    private final UserValidationService userValidationService;  // Injected properly
 
     public ActivityResponse trackActivity(ActivityRequest request) {
+
+        boolean isValidUser = userValidationService.validateUser(request.getUserId());
+
+        if (!isValidUser) {
+            throw new RuntimeException("Invalid User: " + request.getUserId());
+        }
+
         Activity activity = Activity.builder()
                 .userId(request.getUserId())
                 .type(request.getType())
-                .duration((request.getDuration()))
+                .duration(request.getDuration())
                 .caloriesBurned(request.getCaloriesBurned())
                 .startTime(request.getStartTime())
                 .additionalMetrics(request.getAdditionalMetrics())
                 .build();
 
         Activity savedActivity = activityRepository.save(activity);
-        return  mapToResponse (savedActivity);
-
+        return mapToResponse(savedActivity);
     }
-    private  ActivityResponse mapToResponse(Activity activity){
+
+    private ActivityResponse mapToResponse(Activity activity) {
         ActivityResponse response = new ActivityResponse();
         response.setId(activity.getId());
         response.setUserId(activity.getUserId());
@@ -39,7 +48,5 @@ public class ActivityService {
         response.setUpdatedAt(activity.getUpdatedAt());
 
         return response;
-
-
     }
 }
