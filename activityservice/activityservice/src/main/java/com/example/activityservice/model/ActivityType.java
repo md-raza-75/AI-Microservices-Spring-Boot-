@@ -1,15 +1,21 @@
 package com.example.activityservice.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum ActivityType {
     RUNNING,
     WALKING,
-    CYCYLING,
+    CYCLING,
     SWIMMING,
-    WEIGTH_TRAINING,
+    WEIGHT_TRAINING,
     YOGA,
     HIIT,
     CARDIO,
-    STRETECHING,
-    OTHER
+    STRETCHING,
+    OTHER;
 
+    @JsonCreator
+    public static ActivityType from(String value) {
+        return ActivityType.valueOf(value.toUpperCase());
+    }
 }

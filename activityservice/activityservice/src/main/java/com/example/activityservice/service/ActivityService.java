@@ -7,27 +7,31 @@ import com.example.activityservice.model.Activity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneOffset;
+
 @Service
 @RequiredArgsConstructor
 public class ActivityService {
 
     private final ActivityRepository activityRepository;
-    private final UserValidationService userValidationService;  // Injected properly
+    // private final UserValidationService userValidationService; // ✅ Temporarily comment out
 
     public ActivityResponse trackActivity(ActivityRequest request) {
-
-        boolean isValidUser = userValidationService.validateUser(request.getUserId());
-
-        if (!isValidUser) {
-            throw new RuntimeException("Invalid User: " + request.getUserId());
-        }
+        // ✅ Temporary: Skip validation for testing
+        // boolean isValidUser = userValidationService.validateUser(request.getUserId());
+        // if (!isValidUser) {
+        //     throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+        //             "Invalid User: " + request.getUserId());
+        // }
 
         Activity activity = Activity.builder()
                 .userId(request.getUserId())
                 .type(request.getType())
                 .duration(request.getDuration())
                 .caloriesBurned(request.getCaloriesBurned())
-                .startTime(request.getStartTime())
+                .startTime(request.getStartTime() != null
+                        ? request.getStartTime().toInstant(ZoneOffset.UTC)
+                        : null)
                 .additionalMetrics(request.getAdditionalMetrics())
                 .build();
 

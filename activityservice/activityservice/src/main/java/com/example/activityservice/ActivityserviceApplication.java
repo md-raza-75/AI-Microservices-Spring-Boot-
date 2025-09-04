@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
-public class ActivityserviceApplication {
+public class 	ActivityserviceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ActivityserviceApplication.class, args);

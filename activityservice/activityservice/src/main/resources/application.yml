@@ -13,4 +13,4 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
 
 server:
-  port: 9092   # yahan koi free port daal do (8081, 9090, 9190, etc.)
+  port: 9095   # yahan koi free port daal do (8081, 9090, 9190, etc.)
