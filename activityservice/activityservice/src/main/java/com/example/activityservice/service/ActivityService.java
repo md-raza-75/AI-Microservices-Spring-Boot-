@@ -5,7 +5,10 @@ import com.example.activityservice.dto.ActivityRequest;
 import com.example.activityservice.dto.ActivityResponse;
 import com.example.activityservice.model.Activity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.kafka.core.KafkaTemplate;
+
 
 import java.time.ZoneOffset;
 
@@ -14,7 +17,12 @@ import java.time.ZoneOffset;
 public class ActivityService {
 
     private final ActivityRepository activityRepository;
-    // private final UserValidationService userValidationService; // ✅ Temporarily comment out
+    private  final UserValidationService userValidationService;
+    private final KafkaTemplate<String, Activity> kafkaTemplate;
+    //private final UserValidationService userValidationService; // ✅ Temporarily comment out
+
+    @Value("${kafka.topic.name}")
+    private  String topicName;
 
     public ActivityResponse trackActivity(ActivityRequest request) {
         // ✅ Temporary: Skip validation for testing
@@ -36,6 +44,12 @@ public class ActivityService {
                 .build();
 
         Activity savedActivity = activityRepository.save(activity);
+
+        try{
+            kafkaTemplate.send(topicName, savedActivity.getUserId(), savedActivity);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return mapToResponse(savedActivity);
     }
 

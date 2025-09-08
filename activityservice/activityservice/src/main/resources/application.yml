@@ -7,10 +7,20 @@ spring:
       uri: mongodb://localhost:27017/aiactivityfitness
       database: aiactivityfitness
 
+
+  kafka:
+    bootstrap-servers: localhost:9092   # spelling mistake fix
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+kafka:
+  topic:
+    name: activity-events
+
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
 
 server:
-  port: 9095   # yahan koi free port daal do (8081, 9090, 9190, etc.)
+  port: 9095   # koi bhi free port use kar sakte ho (8081, 9090, 9190, etc.)

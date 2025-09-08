@@ -2,10 +2,25 @@ spring:
   application:
     name: aiservice
 
-data:
-  mongodb:
-    uri: mongodb://localhost:27017/airecommendationfitness
-    database: airecommendationfitness
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/airecommendationfitness
+      database: airecommendationfitness
+
+  kafka:
+    bootstrap-servers: localhost:9092   # ✅ spelling sahi
+    consumer:
+      group-id: activity-processor-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer   # ✅ correct
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer  # ✅ correct
+      properties:
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: com.fitness.aiservice.model.Activity
+        spring.json.trusted.packages: "*"
+
+kafka:
+  topic:
+    name: activity-events
 
 eureka:
   client:
@@ -13,4 +28,4 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
 
 server:
-  port: 9093   # free port fixed
+  port: 9093   # free port
